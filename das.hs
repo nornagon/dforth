@@ -113,17 +113,17 @@ val = try register
   <|> try derefRegisterOffset
   <|> try derefRegister
   <|> try (derefAddr >>= return . DerefAddr)
-  <|> try (reserved "pop" >> return Pop)
-  <|> try (reserved "peek" >> return Peek)
-  <|> try (reserved "push" >> return Push)
-  <|> try (reserved "sp" >> return SP)
-  <|> try (reserved "pc" >> return PC)
-  <|> try (reserved "o" >> return Overflow)
+  <|> try (reserved "%pop" >> return Pop)
+  <|> try (reserved "%peek" >> return Peek)
+  <|> try (reserved "%push" >> return Push)
+  <|> try (reserved "%sp" >> return SP)
+  <|> try (reserved "%pc" >> return PC)
+  <|> try (reserved "%o" >> return Overflow)
   <|> try (addrName >>= return . Addr)
   <|> try (literalNum >>= return . Literal)
   <?> "value"
-register = foldr1 (<|>) $ map r ["A","B","C","X","Y","Z","I","J"]
-	where r s = (reserved s >> return (Register s))
+register = foldr1 (<|>) $ map r ["a","b","c","x","y","z","i","j"]
+	where r s = reserved ('%':s) >> return (Register s)
 derefRegister = brackets $ do
 	(Register r) <- register
 	return (DerefRegister r)
@@ -146,7 +146,7 @@ addrLabel = try $ lexeme $ do
 	char ':'
 	return name
 
-identifier = do
+identifier = lexeme $ do
 	first <- letter
 	rest <- many identLetter
 	return (first:rest)
@@ -239,14 +239,14 @@ resolveLabels m [] = []
 resolveLabels m ((Right label):rs) = m label : resolveLabels m rs
 resolveLabels m ((Left w):rs)      = w : resolveLabels m rs
 
-regToInt "A" = 0
-regToInt "B" = 1
-regToInt "C" = 2
-regToInt "X" = 3
-regToInt "Y" = 4
-regToInt "Z" = 5
-regToInt "I" = 6
-regToInt "J" = 7
+regToInt "a" = 0
+regToInt "b" = 1
+regToInt "c" = 2
+regToInt "x" = 3
+regToInt "y" = 4
+regToInt "z" = 5
+regToInt "i" = 6
+regToInt "j" = 7
 
 main = do
 	c <- getContents
