@@ -26,7 +26,7 @@ uint16_t *val(unsigned int v, size_t *cycles) {
 	if (v <= 0x7)
 		return &reg[v];
 	if (v <= 0xf)
-		return &ram[reg[v-0x7]];
+		return &ram[reg[v-0x8]];
 	if (v <= 0x17)
 	{ (*cycles)++; return &ram[ram[PC++] + reg[v-0x10]]; }
 	if (v == 0x18)
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
 					break;
 				case 0x11: // [non-standard] read char
 					{
-						int ret = fputc(*a, stdout);
+						int ret = fgetc(stdin);
 						O = ret == EOF ? 1 : 0;
 						*a = ret == EOF ? 0 : ret;
 					}
