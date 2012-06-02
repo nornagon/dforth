@@ -1,0 +1,9 @@
+	set X str
+loop:
+	ife [X] 0
+	set pc hlt
+	putc [X]
+	add X 1
+	set pc loop
+hlt: "\00"
+str: "Hello world!\0a"
