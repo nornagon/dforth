@@ -51,6 +51,7 @@ data Op =
 	deriving Show
 
 dasFile = do
+	whiteSpace
 	result <- many op
 	whiteSpace
 	eof
